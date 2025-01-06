@@ -1,0 +1,26 @@
+[package]
+name = "function_layer"
+version = "0.1.0"
+edition = "2021"
+default-run = "function_layer"  # Add this line
+
+[[bin]]
+name = "function_layer"
+path = "src/bin/main.rs"
+
+[lib]
+name = "function_layer"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["full"] }
+alloy-primitives = "0.8.18"
+alloy-providers = { version = "0.0.0-reserved" }
+alloy-rpc-types = "0.9.2"
+reqwest = { version = "0.12.12", features = ["json"] }
+eyre = "0.6"
+thiserror = "2.0.9"
+ethers = "2.0.14"
+dotenv = "0.15.0"
