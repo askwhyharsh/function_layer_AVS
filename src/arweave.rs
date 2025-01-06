@@ -30,10 +30,3 @@ impl ArweaveClient {
         Ok(json)
     }
 }
-
-fn main() {
-    // let arweave = ArweaveClient::new(None);
-    // let tx_id = "1234567890";
-    // let result = arweave.get_transaction_data(tx_id).await;
-    // );
-}
