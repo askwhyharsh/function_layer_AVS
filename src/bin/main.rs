@@ -9,8 +9,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     dotenv().ok(); // Load .env file at start
     // Initialize configuration
     let config = Config::new(
-        &std::env::var("ETH_NODE_URL").expect("ETH_NODE_URL must be set in .env"),
-        &std::env::var("CONTRACT_ADDRESS").expect("CONTRACT_ADDRESS must be set in .env"),
+        &std::env::var("RPC_URL").expect("ETH_NODE_URL must be set in .env"),
+        &std::env::var("EXECUTOR_CONTRACT").expect("CONTRACT_ADDRESS must be set in .env"),
         &std::env::var("OPERATOR_ADDRESS").expect("OPERATOR_ADDRESS must be set in .env")
     );
 
