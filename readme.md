@@ -10,6 +10,19 @@ A validator service that listens to smart contract events and executes computati
 
 This service acts as an operator/validator that monitors smart contract events and performs requested computations. Currently supports JavaScript execution on Anvil networks, with more language support planned.
 
+<img width="608" alt="image" src="https://github.com/user-attachments/assets/86de438c-b37c-4559-bda8-660fec7cf4d5" />
+
+Now, for now the above works
+
+later on, the experience of calling a function, will not require arURI or anything, it would be as easy as maybe 
+- calling the name of the function, 
+- providing the inputs
+- payment for the execution
+- number of responses (from validators, how many validotrs should submit the inference)
+
+below is how we can create a registry of commonly used function, 
+<img width="854" alt="image" src="https://github.com/user-attachments/assets/6bf6734c-e3f0-4834-a213-a97a53539ddd" />
+
 ## Prerequisites
 
 - Rust (for running the validator)
