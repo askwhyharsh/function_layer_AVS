@@ -23,7 +23,7 @@ impl JsExecutor {
         
         let temp_dir = TempDir::new_in("temp/js")?;
         let temp_path = temp_dir.path();
-        println!("Temp path: {:?}", temp_path);
+        // println!("Temp path: {:?}", temp_path);
         // Create package.json
         let package_json = r#"{
             "type": "module",

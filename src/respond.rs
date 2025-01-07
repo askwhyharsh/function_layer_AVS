@@ -2,11 +2,10 @@ use ethers::{
     prelude::*,
     types::{Bytes, U256},
     utils::keccak256,
+    abi::encode_packed,
 };
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 use ethers::abi::Token;
-use tokio;
 use crate::contract::ContractClient; // Assuming these exist in contract.rs
 use std::fs;
 use std::env;
@@ -18,6 +17,37 @@ pub struct Task {
     pub response_count: U256,
     pub task_created_block: u32,
     pub request_id: u32,
+}
+
+pub async fn create_signature_for_task(
+    wallet: &LocalWallet,
+    response_string: &str,
+    task: &Task,
+) -> Result<Bytes, Box<dyn std::error::Error + Send + Sync>> {
+    let packed = encode_packed(&[
+        Token::String(response_string.to_string()),
+        Token::Uint(task.request_id.into()),
+    ])?;
+
+    let message_hash = keccak256(packed);
+    
+    // Remove hardcoded chain ID - use wallet's existing chain ID
+    let signature = wallet.sign_message(&message_hash).await?;
+    
+    // When recovering, use the same hash
+    let recovered = signature.recover(&message_hash[..])
+        .expect("Failed to recover signer");
+    
+    // Get the wallet's address to compare
+    let signer_address = wallet.address();
+    
+    assert_eq!(
+        recovered, 
+        signer_address,
+        "Recovered signer doesn't match wallet address"
+    );
+    
+    Ok(Bytes::from(signature.to_vec()))
 }
 
 pub async fn respond_to_task(
@@ -41,21 +71,14 @@ pub async fn respond_to_task(
         &private_key,
     ).await?;
 
-    // Create wallet for signing
-    let wallet = private_key.parse::<LocalWallet>()?;
-
-    // Create signature with correct parameters
-    let encoded = ethers::abi::encode(&[
-        Token::String(response_string.clone()),
-        Token::String(task.code_arweave_uri.clone()),
-        Token::String(task.language.clone()),
-        Token::Uint(task.response_count),
-    ]);
-    let message_hash = keccak256(&encoded);
-    let signature = wallet.sign_message(&message_hash).await?;
-
+    // Create wallet for signing with the correct chain ID
+    let wallet = private_key.parse::<LocalWallet>()?
+        .with_chain_id(contract_client.provider().get_chainid().await?.as_u64());
+    
+    let signature = create_signature_for_task(&wallet, &response_string, &task).await?;
+    
     // Submit response with task struct
-    contract_client
+    let result = contract_client
         .contract()
         .method::<_, ()>(
             "respondToTask",
@@ -67,14 +90,12 @@ pub async fn respond_to_task(
                     task.task_created_block,
                 ),
                 task.request_id,
-                response_string.to_string(),
-                Bytes::from(signature.to_vec())
+                response_string,
+                signature
             )
         )?
         .send()
-        .await?;
-
-    println!("Responded to task: index={}", &task.request_id);
-
+        .await?.clone();
+    
     Ok(())
 }

@@ -76,6 +76,15 @@
   },
   {
     "type": "function",
+    "name": "getSubmissionCountByTaskIndex",
+    "inputs": [
+      { "name": "taskIndex", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "latestTaskNum",
     "inputs": [],
     "outputs": [{ "name": "", "type": "uint32", "internalType": "uint32" }],
@@ -146,6 +155,13 @@
     "stateMutability": "nonpayable"
   },
   {
+    "type": "function",
+    "name": "taskSubmissionCount",
+    "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
     "type": "event",
     "name": "ComputeRequestCreated",
     "inputs": [
@@ -169,6 +185,12 @@
       },
       {
         "name": "responseCount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "taskCreatedBlock",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"

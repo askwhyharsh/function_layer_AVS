@@ -6,15 +6,18 @@ use ethers::providers::Provider;
 use ethers::types::{H256, U256, U64};
 use ethers::prelude::*;
 use ethers::abi::RawLog;
+use colored::*;
+use log::{info, error, warn};
 pub struct EventListener {
     provider: Provider<Http>,
     contract_address: String,
     executor: Executor,
     last_processed_block: U64,
+    // task_created_block: U256,
 }
 
 #[derive(Debug, Clone, EthEvent)]
-#[ethevent(abi = "ComputeRequestCreated(uint256,string,string,uint256)")]
+#[ethevent(abi = "ComputeRequestCreated(uint256,string,string,uint256,uint256)")]
 pub struct ComputeRequestCreated {
     #[ethevent(indexed, name = "taskIndex")]
     pub request_id: U256,
@@ -24,6 +27,8 @@ pub struct ComputeRequestCreated {
     pub code_lang: String,
     #[ethevent(name = "responseCount")]
     pub node_count: U256,
+    #[ethevent(name = "taskCreatedBlock")]
+    pub task_created_block: U256,
 }
 
 #[derive(Debug)]
@@ -32,6 +37,7 @@ pub struct ComputeRequest {
     pub code_json: String,
     pub code_lang: String,
     pub node_count: U256,
+    pub task_created_block: U256,
 }
 
 impl EventListener {
@@ -45,16 +51,25 @@ impl EventListener {
             contract_address,
             executor,
             last_processed_block: U64::zero(),
+            // task_created_block: U256::zero(),
         })
     }
 
     pub async fn start_listening(&mut self) -> Result<()> {
         let address: Address = self.contract_address.parse()?;
-        let event_signature = "ComputeRequestCreated(uint256,string,string,uint256)";
+        let event_signature = "ComputeRequestCreated(uint256,string,string,uint256,uint256)";
         let topic = H256::from(ethers::utils::keccak256(event_signature.as_bytes()));
 
-        self.last_processed_block = self.provider.get_block_number().await?;
-        println!("Starting to listen from block: {}", self.last_processed_block);
+        match self.provider.get_block_number().await {
+            Ok(block) => {
+                self.last_processed_block = block;
+                println!("Starting to listen from block: {}", self.last_processed_block.to_string().cyan());
+            },
+            Err(e) => {
+                error!("{}", format!("Failed to get initial block number: {:?}", e).red());
+                return Err(eyre::eyre!("Failed to get initial block number: {}", e));
+            }
+        }
 
         loop {
             let current_block = self.provider.get_block_number().await?;
@@ -68,32 +83,34 @@ impl EventListener {
 
                 if let Ok(logs) = self.provider.get_logs(&filter).await {
                     for log in logs {
-                        println!("\nNew ComputeRequestCreated event detected!");
-                        println!("Transaction hash: {:?}", log.transaction_hash);
+                        info!("{}", "\nNew ComputeRequestCreated event detected!".green().bold());
+                        info!("Transaction hash: {}", format!("{:?}", log.transaction_hash).cyan());
                         
                         if let Ok(compute_request) = self.parse_compute_request_event(&log) {
-                            println!("Parsed Compute Request:");
-                            println!("Code JSON: {}", compute_request.code_json);
-                            println!("Code Language: {}", compute_request.code_lang);
-                            println!("Node Count: {}", compute_request.node_count);
+                            // info!("{}", "Parsed Compute Request:".yellow());
+                            info!("Code Ar Txn Id: {}", compute_request.code_json.cyan());
+                            info!("Code Language: {}", compute_request.code_lang.cyan());
+                            info!("Node Count: {}", compute_request.node_count.to_string().cyan());
+                            info!("Task Created Block: {}", compute_request.task_created_block.to_string().cyan());
 
-                            // Execute the compute request
                             match self.executor.execute(
                                 compute_request.request_id,
                                 compute_request.code_lang.to_string(),
                                 compute_request.code_json,
                                 compute_request.node_count,
+                                compute_request.task_created_block,
                             ).await {
                                 Ok(_) => {
-                                    println!("Execution completed successfully for request ID: {}", compute_request.request_id);
-                                    // send a deliver smart contract call
+                                    info!("{}", format!("✓ Execution completed successfully for request ID: {}", 
+                                        compute_request.request_id).green());
                                 },
                                 Err(e) => {
-                                    println!("Execution failed: {:?}", e);
+                                    error!("{}", format!("✗ Execution failed: {:?}", e).red());
+                                    warn!("{}", "continuing...".yellow());
                                 }
                             }
                         } else {
-                            println!("Failed to parse compute request event");
+                            error!("{}", "Failed to parse compute request event".red());
                         }
                     }
                 }
@@ -106,19 +123,20 @@ impl EventListener {
     }
 
     fn parse_compute_request_event(&self, log: &Log) -> Result<ComputeRequest> {
-        // Attempt to decode and handle errors explicitly
         match <ComputeRequestCreated as EthEvent>::decode_log(&RawLog::from(log.clone())) {
             Ok(event) => {
-                println!("Successfully decoded event: {:?}", event);
+                info!("{}", "Successfully decoded event:".green());
+                info!("{:?}", event);
                 Ok(ComputeRequest {
                     code_json: event.code_json,
                     code_lang: event.code_lang,
                     node_count: event.node_count,
-                    request_id: event.request_id
+                    request_id: event.request_id,
+                    task_created_block: event.task_created_block,
                 })
             },
             Err(e) => {
-                println!("Failed to decode event: {:?}", e);
+                error!("{}", format!("Failed to decode event: {:?}", e).red());
                 Err(eyre::eyre!("Failed to decode event: {}", e))
             }
         }
