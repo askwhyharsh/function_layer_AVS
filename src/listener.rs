@@ -78,13 +78,19 @@ impl EventListener {
                             println!("Node Count: {}", compute_request.node_count);
 
                             // Execute the compute request
-                            if let Err(e) = self.executor.execute(
+                            match self.executor.execute(
                                 compute_request.request_id,
                                 compute_request.code_lang.to_string(),
                                 compute_request.code_json,
                                 compute_request.node_count,
                             ).await {
-                                println!("Execution failed: {:?}", e);
+                                Ok(_) => {
+                                    println!("Execution completed successfully for request ID: {}", compute_request.request_id);
+                                    // send a deliver smart contract call
+                                },
+                                Err(e) => {
+                                    println!("Execution failed: {:?}", e);
+                                }
                             }
                         } else {
                             println!("Failed to parse compute request event");

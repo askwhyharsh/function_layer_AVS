@@ -1,0 +1,228 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "_avsDirectory", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "allTaskHashes",
+    "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "allTaskResponses",
+    "inputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes", "internalType": "bytes" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "avsDirectory",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "createNewTask",
+    "inputs": [
+      { "name": "codeArweaveUri", "type": "string", "internalType": "string" },
+      { "name": "language", "type": "string", "internalType": "string" },
+      { "name": "responseCount", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct ServiceManager.Task",
+        "components": [
+          {
+            "name": "codeArweaveUri",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "responseCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "language", "type": "string", "internalType": "string" },
+          {
+            "name": "taskCreatedBlock",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "deregisterOperatorFromAVS",
+    "inputs": [
+      { "name": "operator", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "latestTaskNum",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint32", "internalType": "uint32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "operatorRegistered",
+    "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registerOperatorToAVS",
+    "inputs": [
+      { "name": "operator", "type": "address", "internalType": "address" },
+      {
+        "name": "operatorSignature",
+        "type": "tuple",
+        "internalType": "struct ISignatureUtils.SignatureWithSaltAndExpiry",
+        "components": [
+          { "name": "signature", "type": "bytes", "internalType": "bytes" },
+          { "name": "salt", "type": "bytes32", "internalType": "bytes32" },
+          { "name": "expiry", "type": "uint256", "internalType": "uint256" }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "respondToTask",
+    "inputs": [
+      {
+        "name": "task",
+        "type": "tuple",
+        "internalType": "struct ServiceManager.Task",
+        "components": [
+          {
+            "name": "codeArweaveUri",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "responseCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "language", "type": "string", "internalType": "string" },
+          {
+            "name": "taskCreatedBlock",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      },
+      {
+        "name": "referenceTaskIndex",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      { "name": "responseString", "type": "string", "internalType": "string" },
+      { "name": "signature", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "ComputeRequestCreated",
+    "inputs": [
+      {
+        "name": "taskIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "codeArweaveUri",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "language",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "responseCount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TaskResponded",
+    "inputs": [
+      {
+        "name": "taskIndex",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "task",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct ServiceManager.Task",
+        "components": [
+          {
+            "name": "codeArweaveUri",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "responseCount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "language", "type": "string", "internalType": "string" },
+          {
+            "name": "taskCreatedBlock",
+            "type": "uint32",
+            "internalType": "uint32"
+          }
+        ]
+      },
+      {
+        "name": "responseString",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "operator",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  }
+]

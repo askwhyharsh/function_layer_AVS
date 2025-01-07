@@ -23,3 +23,24 @@ async fn main() -> Result<(), Box<dyn Error>> {
     listener.start_listening().await?;
     Ok(())
 }
+
+
+// use function_layer::js_executor::JsExecutor;
+// use function_layer::executor::CodeModule;
+
+// #[tokio::main]
+// async fn main() -> eyre::Result<()> {
+//     // Create a simple JavaScript function that adds two numbers
+//     let code_module = CodeModule {
+//         imports: String::new(), // No imports needed for this simple example
+//         function: String::from("() => { return 5 + 3; }"),
+//     };
+
+//     // Create executor and run the code
+//     let executor = JsExecutor::new();
+//     let result = executor.execute(&code_module).await?;
+    
+//     println!("Result: {:?}", result); // Should print Result: Uint(8)
+    
+//     Ok(())
+// }

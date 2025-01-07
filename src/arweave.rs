@@ -1,4 +1,4 @@
-use reqwest;
+use reqwest::{self, Response};
 use serde_json::Value;
 use thiserror::Error;
 
@@ -21,12 +21,19 @@ impl ArweaveClient {
         }
     }
 
-    pub async fn get_transaction_data(&self, tx_id: &str) -> Result<Value, ArweaveError> {
+    pub async fn get_transaction_data_json(&self, tx_id: &str) -> Result<Value, ArweaveError> {
         let url = format!("{}/{}", self.gateway_url, tx_id);
         
         let response = reqwest::get(&url).await?;
         let json: Value = response.json().await?;
         
         Ok(json)
+    }
+
+    pub async fn get_transaction_data(&self, tx_id: &str) -> Result<Response, ArweaveError> {
+        let url = format!("{}/{}", self.gateway_url, tx_id);
+        
+        let response = reqwest::get(&url).await?;
+        Ok(response)
     }
 }
