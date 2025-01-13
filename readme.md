@@ -8,7 +8,7 @@ A validator service that listens to smart contract events and executes computati
 
 ## Overview
 
-https://youtu.be/YYPECOIkSMM
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/YYPECOIkSMM/0.jpg)](http://www.youtube.com/watch?v=YYPECOIkSMM "Demo and How it works")
 
 This service acts as an operator/validator that monitors smart contract events and performs requested computations. Currently supports JavaScript execution on Anvil networks, with more language support planned.
 
