@@ -1,3 +1,15 @@
 /target
 .env
 /temp
+/contracts/lib
+/contracts/out
+/contracts/cache
+/contracts/.github
+/contracts/.vscode
+anvil.pid
+# Ignores development broadcast logs
+/contracts/broadcast
+/contracts/broadcast/*/31337/
+/contracts/broadcast/**/dry-run/
+
+# Ignores development broadcast logs
