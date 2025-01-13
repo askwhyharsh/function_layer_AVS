@@ -1,5 +1,5 @@
 /target
-.env
+# .env
 /temp
 /contracts/lib
 /contracts/out
@@ -11,5 +11,11 @@ anvil.pid
 /contracts/broadcast
 /contracts/broadcast/*/31337/
 /contracts/broadcast/**/dry-run/
-
-# Ignores development broadcast logs
+contracts/broadcast/*
+contracts/lib/*
+contracts/out/*
+# Ignores scripts
+/scripts/node_modules
+/scripts/package-lock.json
+/scripts/package.json
+# /scripts/.env

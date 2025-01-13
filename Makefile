@@ -22,7 +22,16 @@ up-anvil:
 	@echo "Starting Anvil..."
 	@anvil --port 3001 --fork-url https://eth.drpc.org & echo $$! > anvil.pid
 	@echo "Waiting for Anvil to start..."
-	@sleep 5
+	@sleep 3
 	@echo "Anvil started"
 
-test-flow-of
+create-task:
+	@cd contracts && forge script CreateTask --rpc-url http://localhost:3001 --broadcast
+
+kill-anvil:
+	@echo "Cleaning up any existing Anvil process..."
+	@-pkill -f "anvil" || true
+
+up-contracts-and-execution-avs:
+	@make up-contracts
+	@cargo run
