@@ -23,15 +23,14 @@ contract CreateTask is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        // Contract address (same as in the TypeScript version)
         address contractAddress = 0x427EE58a6c574032085AEB90Dd05dEea6F054930;
         IServiceManager serviceManager = IServiceManager(contractAddress);
 
         // Create new task with the same parameters as the TypeScript version
         IServiceManager.Task memory task = serviceManager.createNewTask(
-            "a3sYP7MtFRUS_u-g30s2sMDGvQyqiI1OehEo7ME4XTA",
-            "js",
-            1
+            "a3sYP7MtFRUS_u-g30s2sMDGvQyqiI1OehEo7ME4XTA", // codeArweaveUri
+            "js", // language
+            1 // how many nodes to respond
         );
 
         console2.log("Task created with contents:", task.contents);
