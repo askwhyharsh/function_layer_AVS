@@ -1,6 +1,6 @@
-# Smart Contract Validator
+# FunctionLayr
 
-A validator service that listens to smart contract events and executes computational tasks.
+A service that listens to smart contract events and executes computational tasks.
 
 ## References
 - [Twitter Discussion](https://x.com/askwhyharsh/status/1876214220880060702)
