@@ -8,6 +8,8 @@ A validator service that listens to smart contract events and executes computati
 
 ## Overview
 
+https://youtu.be/YYPECOIkSMM
+
 This service acts as an operator/validator that monitors smart contract events and performs requested computations. Currently supports JavaScript execution on Anvil networks, with more language support planned.
 
 <img width="608" alt="image" src="https://github.com/user-attachments/assets/86de438c-b37c-4559-bda8-660fec7cf4d5" />
@@ -48,15 +50,8 @@ The validator will now listen for computation requests from the smart contract a
 - Event monitoring for computation requests
 - JavaScript code execution
 
-## Roadmap
-- [ ] Performance optimizations and more details
-- [ ] Support for additional programming languages
-- [ ] Proof of execution in some way
-- [ ] Enhanced error handling
-
 ## Contributing
-
-We welcome contributions! Here's how you can help:
+I welcome contributions! Here's how you can help:
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
